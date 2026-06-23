@@ -11,15 +11,16 @@ This project aims to implement similar UI in apps built in different JS architec
 ## Framework Versions
 
 - Angular 19
-- React 19 (more a library than a framework, an unimportant technicality maybe)
+- React 19
+- Vue 3.5.17
 - Express 4.2.22
 - Cypress 14
 
-In terms of front end frameworks/libraries: Angular is more opinionated and comes with a full toolbox, React is more open to be using with your tools of choice for certain things - both have upsides and downsides depending on what you are doing with it
+In terms of front end frameworks/libraries: Angular is more opinionated and comes with a full toolbox, React and Vue are more open to be using with your tools of choice for certain things - both have upsides and downsides depending on what you are doing with it
 
 ## Live Preview
 
-for brevity/simplicty I have deployed instances of the site to servers so it can be live previewed.
+For brevity/simplicty I have deployed instances of the site to servers so it can be live previewed.
 
 - [API](https://api.demo.ndlbl.com/api/health)
 - [Angular site](https://demo.ndlbl.com)
@@ -28,7 +29,7 @@ for brevity/simplicty I have deployed instances of the site to servers so it can
 
 ## Project Architecture
 
-The mono-repo project contains 4 folders, 1 for each platform (Angular and React) one for the node.js Server with DB connections, Auth, and Email service, and one for Testing (e2e).
+The mono-repo project contains 5 folders, 1 for each platform (Angular, React and Vue) one for the node.js Server with DB connections, Auth, and Email service, and one for Testing (e2e).
 
 The API is a nodeJS server connecting to a mongoDB instance, the apps are both typescripted. The .env file are git-ignored, but .envExample is provided to share the Keys to which you need your own values - any final deploys will likely need the env key/pairs provided as env variables rather than the env files. Deploys for front ends are straight-up static file deploys.
 
@@ -37,13 +38,20 @@ Project
 - API
 - Angular App
 - React App
+- Vue App
 - Tests
 
 ## Developer Experience
 
+### Installation
+
+Refer to your own OS's docs for install mongoDB, this should be running as a service in the background to be able to utilise the apps correctly.
+
+Simply run `npm install` in the root folder to install all the package within this mono-repo
+
 ### Running apps
 
-A 'run all' function is provided in the root package.json via `npm run dev` which concurrenelty starts the 2 front ends (`:4200` for angular and `:5137` for react) and the api, your local MongoDB instance should already be running.
+A 'run all' function is provided in the root package.json via `npm run dev` which concurrenelty starts the 2 front ends (`:4200` for angular, `:5173` for react and `5174` for vie) and the api, your local MongoDB instance should already be running.
 Local mongoDB can run without auth (simply not providing `MONGO_USER` and `MONGO_PASS`) will use the non-authed DBs, never run a deployed API against a non-auth DB instance. front-ends both feature hot-reloads to instantly see changes you make.
 
 ### Linting
@@ -65,6 +73,11 @@ current tamplates are:
 
 - register
 - login
+
+### Commits
+
+Commit against a ticket or job number in the commits description
+When Merging provide screenshotted results of cypress e2e tests
 
 ## Server Side Rendering
 
