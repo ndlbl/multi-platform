@@ -129,8 +129,11 @@ export default function AddLibraryItemForm({ onAdded }: { onAdded?: () => void }
       </div>
       {/* Kind selector — drives the form layout/elements */}
       <div>
-        <label className="mb-1 block text-xs font-medium text-slate-700">Kind</label>
+        <label htmlFor="select-kind" className="mb-1 block text-xs font-medium text-slate-700">
+          Kind
+        </label>
         <select
+          id="select-kind"
           {...register('kind')}
           className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
         >
@@ -142,8 +145,11 @@ export default function AddLibraryItemForm({ onAdded }: { onAdded?: () => void }
 
       {/* Title */}
       <div>
-        <label className="mb-1 block text-xs font-medium text-slate-700">Title</label>
+        <label htmlFor="title-field" className="mb-1 block text-xs font-medium text-slate-700">
+          Title
+        </label>
         <input
+          id="title-field"
           type="text"
           {...register('title')}
           className={`w-full rounded-md border px-3 py-2 text-sm ${
@@ -155,10 +161,11 @@ export default function AddLibraryItemForm({ onAdded }: { onAdded?: () => void }
 
       {/* Tags */}
       <div>
-        <label className="mb-1 block text-xs font-medium text-slate-700">
+        <label htmlFor="tags-field" className="mb-1 block text-xs font-medium text-slate-700">
           Tags <span className="text-slate-400">(comma-separated)</span>
         </label>
         <input
+          id="tags-field"
           type="text"
           placeholder="js, fundamentals"
           {...register('tagsCsv')}
@@ -170,12 +177,14 @@ export default function AddLibraryItemForm({ onAdded }: { onAdded?: () => void }
       {kind === 'book' && (
         <div className="grid grid-cols-2 gap-3">
           <FieldText
+            id="author-field"
             label="Author"
             name="author"
             register={register}
             error={errors.author?.message}
           />
           <FieldNumber
+            id="pages-field"
             label="Pages"
             name="pages"
             register={register}
@@ -186,8 +195,15 @@ export default function AddLibraryItemForm({ onAdded }: { onAdded?: () => void }
 
       {kind === 'podcast' && (
         <div className="grid grid-cols-2 gap-3">
-          <FieldText label="Host" name="host" register={register} error={errors.host?.message} />
+          <FieldText
+            id="host-field"
+            label="Host"
+            name="host"
+            register={register}
+            error={errors.host?.message}
+          />
           <FieldNumber
+            id="duration-field"
             label="Duration (min)"
             name="durationMinutes"
             register={register}
@@ -199,6 +215,7 @@ export default function AddLibraryItemForm({ onAdded }: { onAdded?: () => void }
       {kind === 'article' && (
         <div className="space-y-3">
           <FieldText
+            id="url-field"
             label="URL"
             name="url"
             type="url"
@@ -207,6 +224,7 @@ export default function AddLibraryItemForm({ onAdded }: { onAdded?: () => void }
             error={errors.url?.message}
           />
           <FieldText
+            id="source-field"
             label="Source"
             name="source"
             placeholder="MDN, V8 Blog, …"
@@ -243,6 +261,7 @@ function FieldText({
   placeholder,
   register,
   error,
+  id,
 }: {
   label: string;
   name: keyof FormInput;
@@ -250,11 +269,15 @@ function FieldText({
   placeholder?: string;
   register: UseFormRegister<FormInput>;
   error?: string;
+  id?: string;
 }) {
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-slate-700">{label}</label>
+      <label htmlFor={id} className="mb-1 block text-xs font-medium text-slate-700">
+        {label}
+      </label>
       <input
+        id={id}
         type={type}
         placeholder={placeholder}
         {...register(name)}
@@ -272,16 +295,21 @@ function FieldNumber({
   name,
   register,
   error,
+  id,
 }: {
   label: string;
   name: 'pages' | 'durationMinutes';
   register: UseFormRegister<FormInput>;
   error?: string;
+  id?: string;
 }) {
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-slate-700">{label}</label>
+      <label htmlFor={id} className="mb-1 block text-xs font-medium text-slate-700">
+        {label}
+      </label>
       <input
+        id={id}
         type="number"
         min={1}
         {...register(name, { valueAsNumber: true })}

@@ -52,7 +52,7 @@ export default function HomePage() {
               key={feature.title}
               className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
             >
-              <h3 className="text-lg font-semibold text-slate-900">{feature.title}</h3>
+              <h2 className="text-lg font-semibold text-slate-900">{feature.title}</h2>
               <p className="mt-2 text-sm text-slate-600">{feature.body}</p>
             </div>
           ))}
@@ -69,7 +69,7 @@ export default function HomePage() {
           </p>
           <Link
             to="/register"
-            className="mt-6 inline-block rounded-md bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-400"
+            className="mt-6 inline-block rounded-md bg-white px-5 py-2.5 text-sm font-medium text-indigo-900 hover:text-indigo-700"
           >
             Create an account
           </Link>

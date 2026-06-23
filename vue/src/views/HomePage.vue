@@ -30,7 +30,7 @@ const features = [
     <section class="mx-auto max-w-4xl p-4">
       <div class="grid gap-6 sm:grid-cols-3">
         <div v-for="feature in features" :key="feature.title" class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h3 class="text-lg font-semibold text-slate-900">{{ feature.title }}</h3>
+          <h2 class="text-lg font-semibold text-slate-900">{{ feature.title }}</h2>
           <p class="mt-2 text-sm text-slate-600">{{ feature.body }}</p>
         </div>
       </div>
@@ -40,7 +40,7 @@ const features = [
       <div class="rounded-xl bg-slate-900 px-6 py-12 text-center">
         <h2 class="mt-6 text-2xl font-semibold text-white">Ready to get organised?</h2>
         <p class="mx-auto mt-2 max-w-xl text-slate-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.</p>
-        <RouterLink to="/register" class="mt-6 inline-block rounded-md bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-400"> Create an account </RouterLink>
+        <RouterLink to="/register" class="mt-6 inline-block rounded-md bg-white px-5 py-2.5 text-sm font-medium text-indigo-900 hover:text-indigo-700"> Create an account </RouterLink>
       </div>
     </section>
   </div>

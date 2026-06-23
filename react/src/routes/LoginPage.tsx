@@ -105,7 +105,7 @@ export default function LoginPage() {
         </p>
 
         <div className="text-center">
-          <span className="text-sm text-slate-400">— or —</span>
+          <span className="text-sm text-slate-700">— or —</span>
         </div>
 
         <Link

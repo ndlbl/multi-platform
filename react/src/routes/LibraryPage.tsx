@@ -157,7 +157,11 @@ export default function LibraryPage() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
         />
+        <label htmlFor="filterKind" className="sr-only">
+          Kind:
+        </label>
         <select
+          id="filterKind"
           value={filterKind}
           onChange={(e) => setFilterKind(e.target.value as ItemKind | 'all')}
           className="rounded-md border border-slate-300 px-3 py-2 text-sm"
@@ -269,14 +273,14 @@ function ItemRow({
       />
       <div className="flex-1">
         <div className="flex items-baseline justify-between gap-2">
-          <label htmlFor="{'check-' + item.id}">
+          <label htmlFor={'check-' + item.id}>
             <h3
-              className={`font-medium ${item.consumed ? 'text-slate-400 line-through' : 'text-slate-900'}`}
+              className={`font-medium ${item.consumed ? 'text-slate-600 line-through' : 'text-slate-900'}`}
             >
               {item.title}
             </h3>
           </label>
-          <span className="text-xs uppercase text-slate-400">{item.kind}</span>
+          <span className="text-xs uppercase text-slate-600">{item.kind}</span>
         </div>
 
         <p className="mt-1 text-sm text-slate-600">

@@ -84,7 +84,7 @@ const onSubmit = handleSubmit((values) => {
       </p>
 
       <div class="text-center">
-        <span class="text-sm text-slate-400">— or —</span>
+        <span class="text-sm text-slate-700">— or —</span>
       </div>
 
       <RouterLink to="/login-otp" class="block w-full rounded-md border border-slate-300 bg-white px-4 py-2 text-center text-sm text-slate-700 hover:bg-slate-50"> Log in with email code </RouterLink>

@@ -29,7 +29,7 @@
     <div class="grid gap-6 sm:grid-cols-3">
       @for (feature of features; track feature.title) {
         <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h3 class="text-lg font-semibold text-slate-900">{{ feature.title }}</h3>
+          <h2 class="text-lg font-semibold text-slate-900">{{ feature.title }}</h2>
           <p class="mt-2 text-sm text-slate-600">{{ feature.body }}</p>
         </div>
       }
@@ -46,7 +46,7 @@
       </p>
       <a
         routerLink="/register"
-        class="mt-6 inline-block rounded-md bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-400"
+        class="mt-6 inline-block rounded-md bg-white px-5 py-2.5 text-sm font-medium text-indigo-900 hover:text-indigo-700"
       >
         Create an account
       </a>
