@@ -21,7 +21,7 @@ In terms of front end frameworks/libraries: Angular is more opinionated and come
 
 for brevity/simplicty I have deployed instances of the site to servers so it can be live previewed.
 
-- [API](https://api.demo.ndlbl.com)
+- [API](https://api.demo.ndlbl.com/api/health)
 - [Angular site](https://demo.ndlbl.com)
 - [React site](https://react.demo.ndlbl.com)
 - [Vue site](https://vue.ndlbl.com)
