@@ -121,7 +121,7 @@ function TaskRow({
         id={'check-' + task.id}
       />
       <label className="flex-1" htmlFor={'check-' + task.id}>
-        <span className={task.done ? 'text-slate-400 line-through' : ''}>{task.title}</span>
+        <span className={task.done ? 'text-slate-600 line-through' : ''}>{task.title}</span>
       </label>
       <Link to={`/tasks/${task.id}/edit`} className="text-sm text-indigo-600 hover:text-indigo-800">
         Edit
