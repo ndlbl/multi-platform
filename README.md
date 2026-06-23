@@ -11,7 +11,8 @@ This project aims to implement similar UI in apps built in different JS architec
 ## Framework Versions
 
 - Angular 19
-- React 19 (more a library than a framework, an unimportant technicality maybe)
+- React 19
+- Vue 3.5.17
 - Express 4.2.22
 - Cypress 14
 
