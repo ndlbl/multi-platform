@@ -5,6 +5,7 @@ describe('Angular · Login flow', () => {
   const password = Cypress.env('testPassword') as string
 
   beforeEach(() => {
+    cy.clearLocalStorage()
     cy.task('db:cleanup', { emails: [email] })
     cy.task('db:seedVerifiedUser', { email, password })
   })
