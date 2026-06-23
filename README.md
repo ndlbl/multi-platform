@@ -23,7 +23,7 @@ for brevity/simplicty I have deployed instances of the site to servers so it can
 
 - [API](https://api.demo.ndlbl.com)
 - [Angular site](https://demo.ndlbl.com)
-- [React site](https://react.ndlbl.com)
+- [React site](https://react.demo.ndlbl.com)
 - [Vue site](https://vue.ndlbl.com)
 
 ## Project Architecture
