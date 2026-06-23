@@ -1,0 +1,21 @@
+# Ensure nvm-managed Node is on PATH when run from GUI clients (e.g. GitHub Desktop)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+npx lint-staged
+
+# --- E2E suites (Angular + React) -------------------------------------------
+# These need the full dev stack live (Mongo + API + both dev servers). If it's
+# not up we SKIP (with a warning) rather than block the commit. Bypass entirely
+# with `git commit --no-verify`.
+reachable() { curl -sf -m 3 -o /dev/null "$1"; }
+
+if reachable http://127.0.0.1:3003/api/health \
+  && reachable http://localhost:4200 \
+  && reachable http://localhost:5173; then
+  echo "▶ Dev stack detected — running E2E suites (Angular + React)…"
+  npm run -w e2e e2e:angular && npm run -w e2e e2e:react
+else
+  echo "⚠ Dev stack not fully up (need Mongo + API + ng serve + react dev)."
+  echo "  Skipping E2E. Run 'npm run dev' first to have pre-commit exercise them."
+fi

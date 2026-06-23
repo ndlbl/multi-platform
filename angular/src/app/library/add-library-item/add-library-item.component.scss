@@ -1,0 +1,5 @@
+// without this the <add-library-item> default renders as inline, and
+// tailwind cant target it with parent CSS clases utilities
+:host {
+    display: block;
+  }

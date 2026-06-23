@@ -1,0 +1,113 @@
+<section class="mx-auto max-w-md">
+  <h2 class="mb-4 text-2xl font-semibold text-slate-900">Register</h2>
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    class="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
+  >
+    <!-- Email -->
+    <div>
+      <label for="email-field" class="mb-1 block text-sm font-medium text-slate-700">Email</label>
+      <input
+        id="email-field"
+        type="email"
+        formControlName="email"
+        class="w-full rounded-md border px-3 py-2"
+        [class.border-red-500]="form.controls.email.invalid && form.controls.email.touched"
+        [class.border-slate-300]="!(form.controls.email.invalid && form.controls.email.touched)"
+      />
+      @if (form.controls.email.touched && form.controls.email.errors) {
+        <p class="mt-1 text-xs text-red-600">
+          @if (form.controls.email.errors['required']) {
+            Email is required.
+          } @else if (form.controls.email.errors['email']) {
+            Enter a valid email.
+          }
+        </p>
+      }
+    </div>
+
+    <!-- Password -->
+    <div>
+      <label for="password-field" class="mb-1 block text-sm font-medium text-slate-700"
+        >Password</label
+      >
+      <input
+        id="password-field"
+        type="password"
+        formControlName="password"
+        class="w-full rounded-md border px-3 py-2"
+        [class.border-red-500]="form.controls.password.invalid && form.controls.password.touched"
+        [class.border-slate-300]="
+          !(form.controls.password.invalid && form.controls.password.touched)
+        "
+      />
+      @if (form.controls.password.touched && form.controls.password.errors; as errors) {
+        <ul class="mt-1 list-disc pl-5 text-xs text-red-600">
+          @if (errors['minLength']) {
+            <li>Must be at least 8 characters</li>
+          }
+          @if (errors['lowercase']) {
+            <li>Must contain a lowercase letter</li>
+          }
+          @if (errors['uppercase']) {
+            <li>Must contain an uppercase letter</li>
+          }
+          @if (errors['digit']) {
+            <li>Must contain a number</li>
+          }
+          @if (errors['special']) {
+            <li>Must contain a special character</li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Confirm -->
+    <div>
+      <label for="password-confirm-field" class="mb-1 block text-sm font-medium text-slate-700"
+        >Confirm password</label
+      >
+      <input
+        id="password-confirm-field"
+        type="password"
+        formControlName="confirm"
+        class="w-full rounded-md border px-3 py-2"
+        [class.border-red-500]="
+          form.controls.confirm.touched &&
+          (form.controls.confirm.invalid || form.hasError('mismatch'))
+        "
+        [class.border-slate-300]="
+          !(
+            form.controls.confirm.touched &&
+            (form.controls.confirm.invalid || form.hasError('mismatch'))
+          )
+        "
+      />
+      @if (form.controls.confirm.touched && form.controls.confirm.errors?.['required']) {
+        <p class="mt-1 text-xs text-red-600">Confirm password is required.</p>
+      } @else if (form.controls.confirm.touched && form.hasError('mismatch')) {
+        <p class="mt-1 text-xs text-red-600">Passwords don't match.</p>
+      }
+    </div>
+
+    @if (serverError()) {
+      <p class="rounded border border-red-200 bg-red-50 p-2 text-sm text-red-700">
+        {{ serverError() }}
+      </p>
+    }
+
+    <button
+      type="submit"
+      [disabled]="loading()"
+      class="w-full rounded-md bg-indigo-600 px-4 py-2 text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
+    >
+      {{ loading() ? 'Creating account…' : 'Register' }}
+    </button>
+
+    <p class="text-center text-sm text-slate-600">
+      Already have an account? <a routerLink="/login" class="text-indigo-600 underline">Log in</a>
+    </p>
+  </form>
+</section>

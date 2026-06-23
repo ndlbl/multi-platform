@@ -1,0 +1,120 @@
+<section class="mx-auto max-w-4xl p-4">
+  <a routerLink="/admin" class="text-sm text-slate-600 hover:text-slate-900">← All users</a>
+
+  @if (loading()) {
+    <p class="rounded-lg border border-slate-200 bg-white p-4 text-slate-500">Loading…</p>
+  } @else if (error()) {
+    <p class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">{{ error() }}</p>
+  } @else {
+    @if (user(); as u) {
+      <!-- Header -->
+      <div>
+        <div class="flex items-baseline justify-between">
+          <h2 class="text-2xl font-semibold text-slate-900">{{ u.email }}</h2>
+          <span
+            class="rounded-full px-3 py-1 text-xs font-medium"
+            [class]="
+              u.role === 'admin' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'
+            "
+          >
+            {{ u.role }}
+          </span>
+        </div>
+        <p class="mt-1 text-sm text-slate-500">Joined {{ u.createdAt | date: 'mediumDate' }}</p>
+      </div>
+
+      <!-- Tasks -->
+      <section>
+        <h3 class="mb-3 text-lg font-semibold text-slate-900">
+          Tasks <span class="text-slate-400">({{ tasks().length }})</span>
+        </h3>
+        @if (tasks().length === 0) {
+          <p class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-500">
+            No tasks.
+          </p>
+        } @else {
+          <ul class="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white">
+            @for (task of tasks(); track task.id) {
+              <li class="flex items-center gap-3 p-3 text-sm">
+                <span
+                  class="flex h-4 w-4 items-center justify-center rounded border text-xs"
+                  [class]="
+                    task.done ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-300'
+                  "
+                >
+                  @if (task.done) {
+                    ✓
+                  }
+                </span>
+                <span [class]="task.done ? 'text-slate-400 line-through' : 'text-slate-900'">
+                  {{ task.title }}
+                </span>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+
+      <!-- Library -->
+      <section>
+        <h3 class="mb-3 text-lg font-semibold text-slate-900">
+          Library <span class="text-slate-400">({{ library().length }})</span>
+        </h3>
+        @if (library().length === 0) {
+          <p class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-500">
+            No library items.
+          </p>
+        } @else {
+          <ul class="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white">
+            @for (item of library(); track item.id) {
+              <li class="flex items-start gap-3 p-3 text-sm">
+                <span
+                  class="mt-0.5 flex h-4 w-4 items-center justify-center rounded border text-xs"
+                  [class]="
+                    item.consumed
+                      ? 'border-emerald-500 bg-emerald-500 text-white'
+                      : 'border-slate-300'
+                  "
+                >
+                  @if (item.consumed) {
+                    ✓
+                  }
+                </span>
+                <div class="flex-1">
+                  <div class="flex items-baseline justify-between gap-2">
+                    <span
+                      [class]="item.consumed ? 'text-slate-400 line-through' : 'text-slate-900'"
+                    >
+                      {{ item.title }}
+                    </span>
+                    <span class="text-xs uppercase text-slate-400">{{ item.kind }}</span>
+                  </div>
+                  <p class="mt-1 text-xs text-slate-500">
+                    @switch (item.kind) {
+                      @case ('book') {
+                        {{ item.author }} · {{ item.pages }} pages
+                      }
+                      @case ('podcast') {
+                        {{ item.host }} · {{ item.durationMinutes }} min
+                      }
+                      @case ('article') {
+                        <a
+                          [href]="item.url"
+                          target="_blank"
+                          rel="noreferrer"
+                          class="text-indigo-600 underline"
+                        >
+                          {{ item.source }}
+                        </a>
+                      }
+                    }
+                  </p>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+  }
+</section>

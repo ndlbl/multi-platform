@@ -1,0 +1,49 @@
+# Local dev loads this file (.env). In production these are set as real environment
+
+# variables by the host / process manager (Plesk, PM2, systemd, container env) — no
+
+# .env file is needed there.
+
+JWT_SECRET=some-random-string
+JWT_EXPIRES=7d
+
+# --- MongoDB ---
+
+# Dev: leave the MONGO\_\* vars unset to use the local, unauthenticated mongod
+
+# (mongodb://127.0.0.1:27017/taskmanager).
+
+# Production: set credentials → the API connects authenticated. Use the RAW password
+
+# (special chars like `!` need no percent-encoding — they're passed as driver options).
+
+MONGO_USER=USERNAME
+MONGO_PASS=PASS
+
+# Optional overrides (defaults shown in comments):
+
+# MONGO_HOST=127.0.0.1
+
+# MONGO_PORT=27017
+
+# MONGO_DB=taskmanager
+
+# authSource defaults to MONGO_DB above; set to 'admin' if the user lives in the admin db:
+
+# MONGO_AUTH_SOURCE=admin
+
+# Or bypass all of the above with one full connection string (e.g. Atlas):
+
+# MONGO_URI=mongodb://user:pass@host:27017/taskmanager?authSource=admin
+
+# --- Email (OTP delivery) ---
+# Set SMTP_HOST to switch from the console logger to real SMTP (nodemailer).
+# Leave SMTP_HOST unset in plain dev → OTPs print to the console.
+# Port 465 = implicit TLS (secure); 587/25 = STARTTLS. SMTP_SECURE overrides if needed.
+SMTP_HOST=
+SMTP_PORT=465
+SMTP_USER=
+SMTP_PASS=
+# From address — must be one the SMTP server may send for. Defaults to SMTP_USER if unset.
+SMTP_FROM=
+# SMTP_SECURE=true

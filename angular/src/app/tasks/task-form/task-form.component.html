@@ -1,0 +1,70 @@
+<section class="mx-auto max-w-xl p-4">
+  <div class="mb-4 flex items-baseline justify-between">
+    <h2 class="text-2xl font-semibold text-slate-900">{{ heading() }}</h2>
+    <a routerLink="/tasks" class="text-sm text-slate-600 hover:text-slate-900">← Back</a>
+  </div>
+
+  @if (loading()) {
+    <p class="rounded-lg border border-slate-200 bg-white p-4 text-slate-500">Loading…</p>
+  } @else {
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      class="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
+    >
+      <!-- Title -->
+      <div>
+        <label for="title" class="mb-1 block text-sm font-medium text-slate-700"> Title </label>
+        <input
+          id="title"
+          type="text"
+          formControlName="title"
+          class="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          [class.border-red-500]="form.controls.title.invalid && form.controls.title.touched"
+        />
+
+        @if (form.controls.title.touched && form.controls.title.errors; as errors) {
+          <p class="mt-1 text-sm text-red-600">
+            @if (errors['required']) {
+              Title is required.
+            } @else if (errors['maxlength']) {
+              Max 200 characters (you typed {{ errors['maxlength'].actualLength }}).
+            }
+          </p>
+        }
+      </div>
+
+      <!-- Done -->
+      <div class="flex items-center gap-2">
+        <input
+          id="done"
+          type="checkbox"
+          formControlName="done"
+          class="h-4 w-4 rounded border-slate-300"
+        />
+        <label for="done" class="text-sm text-slate-700">Mark as done</label>
+      </div>
+
+      <!-- Server error -->
+      @if (error()) {
+        <p class="rounded border border-red-200 bg-red-50 p-2 text-sm text-red-700">
+          {{ error() }}
+        </p>
+      }
+
+      <!-- Buttons -->
+      <div class="flex justify-end gap-2 pt-2">
+        <a routerLink="/tasks" class="rounded-md px-4 py-2 text-slate-700 hover:bg-slate-100">
+          Cancel
+        </a>
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="rounded-md bg-indigo-600 px-4 py-2 text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
+        >
+          {{ saving() ? 'Saving…' : isEdit() ? 'Save changes' : 'Create task' }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

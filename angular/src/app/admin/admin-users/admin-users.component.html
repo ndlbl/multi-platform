@@ -1,0 +1,62 @@
+<section class="mx-auto max-w-4xl p-4">
+  <div class="flex items-baseline justify-between">
+    <h2 class="text-2xl font-semibold text-slate-900">All users</h2>
+    <span class="text-sm text-slate-500">{{ users().length }} total</span>
+  </div>
+
+  @if (loading()) {
+    <p class="rounded-lg border border-slate-200 bg-white p-4 text-slate-500">Loading…</p>
+  } @else if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+      {{ error() }}
+      <button class="ml-2 underline" (click)="fetch()">Retry</button>
+    </div>
+  } @else {
+    <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+      <table class="min-w-full divide-y divide-slate-200">
+        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+          <tr>
+            <th class="px-4 py-2 text-left">Email</th>
+            <th class="px-4 py-2 text-left">Role</th>
+            <th class="px-4 py-2 text-right">Tasks</th>
+            <th class="px-4 py-2 text-right">Library</th>
+            <th class="px-4 py-2 text-left">Joined</th>
+            <th class="px-4 py-2"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          @for (u of users(); track u.id) {
+            <tr class="hover:bg-slate-50">
+              <td class="px-4 py-3 text-sm text-slate-900">{{ u.email }}</td>
+              <td class="px-4 py-3 text-sm">
+                <span
+                  class="rounded-full px-2 py-0.5 text-xs font-medium"
+                  [class]="
+                    u.role === 'admin'
+                      ? 'bg-amber-100 text-amber-800'
+                      : 'bg-slate-100 text-slate-700'
+                  "
+                >
+                  {{ u.role }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-right text-sm text-slate-700">{{ u.taskCount }}</td>
+              <td class="px-4 py-3 text-right text-sm text-slate-700">{{ u.libraryCount }}</td>
+              <td class="px-4 py-3 text-sm text-slate-500">
+                {{ u.createdAt | date: 'mediumDate' }}
+              </td>
+              <td class="px-4 py-3 text-right">
+                <a
+                  [routerLink]="['/admin/users', u.id]"
+                  class="text-sm text-indigo-600 hover:text-indigo-800"
+                >
+                  View →
+                </a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

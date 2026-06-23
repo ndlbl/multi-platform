@@ -1,0 +1,66 @@
+<section class="mx-auto max-w-4xl p-4">
+  <div class="mb-4 flex items-baseline justify-between">
+    <h2 class="text-2xl font-semibold text-slate-900">Your tasks</h2>
+    <div class="flex items-baseline gap-4">
+      <span class="text-sm text-slate-500">{{ outstanding() }} outstanding</span>
+      <a
+        routerLink="/tasks/new"
+        class="rounded-md bg-indigo-600 px-3 py-1.5 text-sm text-white shadow hover:bg-indigo-700"
+      >
+        + New task
+      </a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <ul
+      class="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white shadow-sm"
+      aria-busy="true"
+      aria-label="Loading tasks"
+    >
+      @for (row of [1, 2, 3, 4, 5]; track row) {
+        <li class="flex items-center gap-3 p-4">
+          <span class="h-4 w-4 animate-pulse rounded bg-slate-200"></span>
+          <span class="h-4 flex-1 animate-pulse rounded bg-slate-200"></span>
+          <span class="h-4 w-8 animate-pulse rounded bg-slate-200"></span>
+          <span class="h-4 w-12 animate-pulse rounded bg-slate-200"></span>
+        </li>
+      }
+    </ul>
+  } @else if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+      {{ error() }}
+      <button class="ml-2 underline" (click)="fetch()">Retry</button>
+    </div>
+  } @else {
+    <ul class="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white shadow-sm">
+      @for (task of tasks(); track task.id) {
+        <li class="flex items-center gap-3 p-4">
+          <input
+            type="checkbox"
+            class="h-4 w-4 rounded border-slate-300"
+            [checked]="task.done"
+            (change)="toggle(task.id, task.done)"
+            [id]="'check-' + task.id"
+          />
+          <label class="flex-1" [for]="'check-' + task.id">
+            <span [class.line-through]="task.done" [class.text-slate-400]="task.done">
+              {{ task.title }}
+            </span>
+          </label>
+          <a
+            [routerLink]="['/tasks', task.id, 'edit']"
+            class="text-sm text-indigo-600 hover:text-indigo-800"
+          >
+            Edit
+          </a>
+          <button class="text-sm text-red-600 hover:text-red-800" (click)="remove(task.id)">
+            Delete
+          </button>
+        </li>
+      } @empty {
+        <li class="p-4 text-center text-slate-500">No tasks yet.</li>
+      }
+    </ul>
+  }
+</section>

@@ -1,0 +1,9 @@
+{# OTP login journey — one-time sign-in code #}
+{% extends "base.njk" %}
+{% block content %}
+<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: bold; color: #0f172a;">Your login code</h1>
+<p style="margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: #475569;">
+  Here's your one-time code to sign in to {{ appName }}. Enter it on the login screen to continue.
+</p>
+{% include "partials/code-box.njk" %}
+{% endblock %}

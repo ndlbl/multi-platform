@@ -1,0 +1,31 @@
+{# Shared email layout: header + footer chrome wrap the per-email {% block content %}.
+   Table-based + inline styles for broad email-client compatibility. #}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>{{ subject }}</title>
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #f1f5f9;">
+    {% if preheader %}
+    <div style="display: none; max-height: 0; overflow: hidden; opacity: 0;">{{ preheader }}</div>
+    {% endif %}
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f1f5f9; padding: 24px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;">
+            {% include "partials/header.njk" %}
+            <tr>
+              <td style="padding: 32px 40px; font-family: Arial, Helvetica, sans-serif; color: #0f172a;">
+                {% block content %}{% endblock %}
+              </td>
+            </tr>
+            {% include "partials/footer.njk" %}
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

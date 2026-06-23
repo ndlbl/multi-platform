@@ -1,0 +1,101 @@
+<section class="mx-auto max-w-md">
+  <h2 class="mb-4 text-2xl font-semibold text-slate-900">Verify your email</h2>
+  <p class="mb-4 text-sm text-slate-600">
+    Enter the 6-character code we sent. It's valid for 10 minutes.
+  </p>
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    class="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
+  >
+    <div>
+      <label for="email-field" class="mb-1 block text-sm font-medium text-slate-700">Email</label>
+      <input
+        id="email-field"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        class="w-full rounded-md border px-3 py-2"
+        [class.border-red-500]="form.controls.email.invalid && form.controls.email.touched"
+        [class.border-slate-300]="!(form.controls.email.invalid && form.controls.email.touched)"
+      />
+      @if (form.controls.email.touched && form.controls.email.errors) {
+        <p class="mt-1 text-xs text-red-600">
+          @if (form.controls.email.errors['required']) {
+            Email is required.
+          } @else if (form.controls.email.errors['email']) {
+            Enter a valid email.
+          }
+        </p>
+      }
+    </div>
+
+    <div>
+      <label for="otp-code-field" class="mb-1 block text-sm font-medium text-slate-700">Code</label>
+      <input
+        id="otp-code-field"
+        type="text"
+        formControlName="code"
+        autocomplete="one-time-code"
+        inputmode="text"
+        maxlength="6"
+        placeholder="ABC123"
+        class="w-full rounded-md border px-3 py-3 text-center font-mono text-2xl uppercase tracking-[0.5em]"
+        [class.border-red-500]="form.controls.code.invalid && form.controls.code.touched"
+        [class.border-slate-300]="!(form.controls.code.invalid && form.controls.code.touched)"
+      />
+      @if (form.controls.code.touched && form.controls.code.errors) {
+        <p class="mt-1 text-xs text-red-600">
+          @if (form.controls.code.errors['required']) {
+            Code is required.
+          } @else if (
+            form.controls.code.errors['minlength'] || form.controls.code.errors['maxlength']
+          ) {
+            Must be exactly 6 characters.
+          } @else if (form.controls.code.errors['pattern']) {
+            Use only A–Z and 0–9.
+          }
+        </p>
+      }
+    </div>
+
+    @if (serverError()) {
+      <p class="rounded border border-red-200 bg-red-50 p-2 text-sm text-red-700">
+        {{ serverError() }}
+      </p>
+    }
+
+    @if (resendMessage()) {
+      <p class="rounded border border-emerald-200 bg-emerald-50 p-2 text-sm text-emerald-700">
+        {{ resendMessage() }}
+      </p>
+    }
+
+    @if (resendError()) {
+      <p class="rounded border border-red-200 bg-red-50 p-2 text-sm text-red-700">
+        {{ resendError() }}
+      </p>
+    }
+
+    <button
+      type="submit"
+      [disabled]="loading()"
+      class="w-full rounded-md bg-indigo-600 px-4 py-2 text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
+    >
+      {{ loading() ? 'Verifying…' : 'Verify and log in' }}
+    </button>
+
+    <div class="flex items-center justify-between text-sm">
+      <button
+        type="button"
+        (click)="resend()"
+        [disabled]="resending() || !form.controls.email.value"
+        class="text-indigo-600 hover:text-indigo-800 disabled:text-slate-400"
+      >
+        {{ resending() ? 'Sending…' : 'Resend code' }}
+      </button>
+      <a routerLink="/login" class="text-slate-600 hover:text-slate-900">Back to log in</a>
+    </div>
+  </form>
+</section>

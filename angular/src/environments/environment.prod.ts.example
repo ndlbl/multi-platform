@@ -1,0 +1,5 @@
+export const environment = {
+  // Absolute API URL for production (cross-origin, CORS is open).
+  // noly required by my oersonal deploy scripts
+  apiUrl: 'https://your-api-url.com',
+};

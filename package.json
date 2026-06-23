@@ -1,0 +1,39 @@
+{
+    "name": "multi-framework-app-mono",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "api",
+        "angular",
+        "react",
+        "vue",
+        "e2e"
+    ],
+    "description": "multi framework full-stack refresh workspace monorepo",
+    "scripts": {
+        "prepare": "husky",
+        "dev": "concurrently -n API,NG,RX,VU -c green,cyan,magenta,yellow \"npm run -w app-api dev\" \"npm run -w angular-app start\" \"npm run -w react-app dev\" \"npm run -w vue-app dev\"",
+        "dev:api": "npm run -w app-api dev",
+        "dev:angular": "npm run -w angular-app start",
+        "dev:react": "npm run -w react-app dev",
+        "dev:vue": "npm run -w vue-app dev",
+        "e2e:open": "npm run -w e2e cy:open",
+        "e2e:angular": "npm run -w e2e e2e:angular",
+        "e2e:react": "npm run -w e2e e2e:react",
+        "e2e:vue": "npm run -w e2e e2e:vue",
+        "e2e:all": "npm run -w e2e e2e:all"
+    },
+    "lint-staged": {
+        "angular/**/*.{ts,html}": [
+            "node_modules/.bin/prettier --write"
+        ],
+        "react/**/*.{ts,tsx}": [
+            "node_modules/.bin/prettier --write"
+        ]
+    },
+    "devDependencies": {
+        "concurrently": "^10.0.3",
+        "husky": "^9.1.7",
+        "lint-staged": "^15.5.2"
+    }
+}
