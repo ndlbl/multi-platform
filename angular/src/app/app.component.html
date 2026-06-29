@@ -30,16 +30,34 @@
                 ariaCurrentWhenActive="page"
                 routerLink="/tasks"
                 routerLinkActive="font-medium text-indigo-600"
-                >Tasks</a
+                class="flex items-center gap-1"
               >
+                Tasks
+                @if (offlineQueue.taskCount() > 0) {
+                  <span
+                    class="rounded-full bg-amber-400 px-1.5 py-0.5 text-xs font-medium text-white"
+                  >
+                    {{ offlineQueue.taskCount() }}
+                  </span>
+                }
+              </a>
             </li>
             <li>
               <a
                 ariaCurrentWhenActive="page"
                 routerLink="/library"
                 routerLinkActive="font-medium text-indigo-600"
-                >Library</a
+                class="flex items-center gap-1"
               >
+                Library
+                @if (offlineQueue.libraryCount() > 0) {
+                  <span
+                    class="rounded-full bg-amber-400 px-1.5 py-0.5 text-xs font-medium text-white"
+                  >
+                    {{ offlineQueue.libraryCount() }}
+                  </span>
+                }
+              </a>
             </li>
 
             @if (isAdmin()) {
@@ -82,6 +100,30 @@
       </nav>
     </div>
   </header>
+
+  @if (connectivity.offline()) {
+    <div
+      role="status"
+      class="flex items-center justify-center gap-2 border-b border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800"
+    >
+      <span>You're offline</span>
+      @if (offlineQueue.totalPending() > 0) {
+        <span class="rounded-full bg-amber-200 px-2 py-0.5 text-xs font-medium">
+          {{ offlineQueue.totalPending() }} change{{
+            offlineQueue.totalPending() === 1 ? '' : 's'
+          }}
+          pending
+        </span>
+      }
+    </div>
+  } @else if (syncing()) {
+    <div
+      role="status"
+      class="flex items-center justify-center gap-2 border-b border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-800"
+    >
+      <span>Syncing changes...</span>
+    </div>
+  }
 
   <main>
     <router-outlet />
