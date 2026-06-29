@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { map, tap } from 'rxjs';
+import { EMPTY, from, Observable, of } from 'rxjs';
+import { catchError, concatMap, map, tap } from 'rxjs/operators';
 
+import { ConnectivityService } from '../core/connectivity.service';
+import { LibraryQueuedOp, OfflineQueueService } from '../core/offline-queue.service';
 import {
   CountsByKind,
   isArticle,
@@ -27,12 +30,14 @@ type ApiLibraryItem = DistributiveOmit<LibraryItem, 'addedAt'> & { addedAt: stri
 @Injectable({ providedIn: 'root' })
 export class LibraryService {
   private readonly http = inject(HttpClient);
+  private readonly connectivity = inject(ConnectivityService);
+  private readonly offlineQueue = inject(OfflineQueueService);
   private readonly baseUrl = '/api/library';
 
   private readonly _items = signal<LibraryItem[]>([]);
   readonly items = this._items.asReadonly();
 
-  //filterUIState
+  // filterUIState
   readonly filterKind = signal<ItemKind | 'all'>('all');
   readonly searchTerm = signal('');
 
@@ -97,23 +102,53 @@ export class LibraryService {
     () => new Map(this._items().map((i) => [i.id, i] as const)),
   );
 
-  // COMMANDS (HTTP-backed, mirrors TaskService) ------------------------------
+  // COMMANDS (HTTP-backed, mirrors TaskService)
 
-  load() {
+  load(): Observable<LibraryItem[]> {
+    if (this.connectivity.offline()) {
+      if (this.offlineQueue.libraryHasPending()) this.applyQueueOptimistically();
+      return of(this._items());
+    }
     return this.http.get<ApiLibraryItem[]>(this.baseUrl).pipe(
       map((items) => items.map(reviveDates)),
       tap((items) => this._items.set(items)),
     );
   }
 
-  add(input: NewLibraryItem) {
+  add(input: NewLibraryItem): Observable<LibraryItem> {
+    if (this.connectivity.offline()) {
+      const now = new Date();
+      const optimistic = { ...input, id: `local-${Date.now()}`, addedAt: now } as LibraryItem;
+      this._items.update((list) => [optimistic, ...list]);
+      this.offlineQueue.enqueueLibrary({
+        id: crypto.randomUUID(),
+        op: 'create',
+        tempId: optimistic.id,
+        payload: input,
+        addedAt: now.toISOString(),
+      });
+      return of(optimistic);
+    }
     return this.http.post<ApiLibraryItem>(this.baseUrl, input).pipe(
       map(reviveDates),
       tap((created) => this._items.update((list) => [created, ...list])),
     );
   }
 
-  update(id: string, changes: LibraryItemUpdate) {
+  update(id: string, changes: LibraryItemUpdate): Observable<LibraryItem> {
+    if (this.connectivity.offline()) {
+      const existing = this._items().find((i) => i.id === id);
+      if (!existing) return EMPTY;
+      const optimistic = { ...existing, ...changes } as LibraryItem;
+      this._items.update((list) => list.map((i) => (i.id === id ? optimistic : i)));
+      this.offlineQueue.enqueueLibrary({
+        id: crypto.randomUUID(),
+        op: 'update',
+        itemId: id,
+        changes,
+      });
+      return of(optimistic);
+    }
     return this.http.patch<ApiLibraryItem>(`${this.baseUrl}/${id}`, changes).pipe(
       map(reviveDates),
       tap((updated) => this._items.update((list) => list.map((i) => (i.id === id ? updated : i)))),
@@ -124,10 +159,23 @@ export class LibraryService {
     return this.update(id, { consumed: !this.byId().get(id)?.consumed });
   }
 
-  remove(id: string) {
+  remove(id: string): Observable<void> {
+    if (this.connectivity.offline()) {
+      this._items.update((list) => list.filter((i) => i.id !== id));
+      this.offlineQueue.enqueueLibrary({ id: crypto.randomUUID(), op: 'delete', itemId: id });
+      return EMPTY;
+    }
     return this.http
       .delete<void>(`${this.baseUrl}/${id}`)
       .pipe(tap(() => this._items.update((list) => list.filter((i) => i.id !== id))));
+  }
+
+  // Replay queued library mutations against the live API on reconnect
+  flush(): Observable<unknown> {
+    if (!this.connectivity.online()) return of(null);
+    const ops = this.offlineQueue.libraryEntries();
+    if (ops.length === 0) return of(null);
+    return from([...ops]).pipe(concatMap((entry) => this.syncEntry(entry)));
   }
 
   groupBy<T, K extends PropertyKey>(items: readonly T[], keyFn: (item: T) => K): Record<K, T[]> {
@@ -140,9 +188,71 @@ export class LibraryService {
       {} as Record<K, T[]>,
     );
   }
+
+  private syncEntry(entry: LibraryQueuedOp): Observable<unknown> {
+    switch (entry.op) {
+      case 'create':
+        return this.http.post<ApiLibraryItem>(this.baseUrl, entry.payload).pipe(
+          map(reviveDates),
+          tap((created) => {
+            this._items.update((list) => list.map((i) => (i.id === entry.tempId ? created : i)));
+            this.offlineQueue.replaceLibraryTempId(entry.tempId, created.id);
+            this.offlineQueue.removeLibrary(entry.id);
+          }),
+          catchError(() => {
+            this.offlineQueue.removeLibrary(entry.id);
+            return EMPTY;
+          }),
+        );
+      case 'update':
+        return this.http
+          .patch<ApiLibraryItem>(`${this.baseUrl}/${entry.itemId}`, entry.changes)
+          .pipe(
+            map(reviveDates),
+            tap((updated) =>
+              this._items.update((list) => list.map((i) => (i.id === entry.itemId ? updated : i))),
+            ),
+            tap(() => this.offlineQueue.removeLibrary(entry.id)),
+            catchError(() => {
+              this.offlineQueue.removeLibrary(entry.id);
+              return EMPTY;
+            }),
+          );
+      case 'delete':
+        return this.http.delete<void>(`${this.baseUrl}/${entry.itemId}`).pipe(
+          tap(() => this.offlineQueue.removeLibrary(entry.id)),
+          catchError(() => {
+            this.offlineQueue.removeLibrary(entry.id);
+            return EMPTY;
+          }),
+        );
+    }
+  }
+
+  // Re-apply queued mutations on the current list when still has stale cache
+  private applyQueueOptimistically(): void {
+    let items = [...this._items()];
+    for (const entry of this.offlineQueue.libraryEntries()) {
+      if (entry.op === 'create' && !items.find((i) => i.id === entry.tempId)) {
+        const optimistic = {
+          ...entry.payload,
+          id: entry.tempId,
+          addedAt: new Date(entry.addedAt),
+        } as LibraryItem;
+        items = [optimistic, ...items];
+      } else if (entry.op === 'update') {
+        items = items.map((i) =>
+          i.id === entry.itemId ? ({ ...i, ...entry.changes } as LibraryItem) : i,
+        );
+      } else if (entry.op === 'delete') {
+        items = items.filter((i) => i.id !== entry.itemId);
+      }
+    }
+    this._items.set(items);
+  }
 }
 
-/** Revive the JSON `addedAt` string into a Date so the model's `Date` typing holds at runtime. */
+/** JSON `addedAt` > string to a Date for the model's `Date` typing. */
 function reviveDates(item: ApiLibraryItem): LibraryItem {
   return { ...item, addedAt: new Date(item.addedAt) } as LibraryItem;
 }
