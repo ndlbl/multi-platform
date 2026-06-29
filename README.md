@@ -3,7 +3,7 @@
 ## MERN/MEAN/MEVN stack
 
 - Mongo, Express, React, Node
-- Mongo Express, Angular, Node
+- Mongo Express, Angular, Node (PWA)
 - Mongo Express, Vue, Node
 
 This project aims to implement similar UI in apps built in different JS architecture themes/styles as proofs of concepts/boilerplate/comparison points. While being fairly basic application at their hearts they demonstrate full CRUD operations built with good Auth/Security in mind and best practice in terms of handling data concurrently to a consistent UI with a good user experience.
@@ -26,6 +26,22 @@ For brevity/simplicty I have deployed instances of the site to servers so it can
 - [Angular site](https://demo.ndlbl.com)
 - [React site](https://react.demo.ndlbl.com)
 - [Vue site](https://vue.ndlbl.com)
+
+## Angular PWA
+
+The Angular project in particular has been updated to show capabilities in Progressive web apps, utilising service workers and offline queues for CRUD items.
+
+- Installable to phone homescreen, then viewable as a chromeless standalone application
+- Offline/online aware
+- Offline queueing for both task and library items
+- Service workers for caching and app update loops
+
+To test these features you can:
+
+- Noticing the offline banner when disconnected from networks.
+- Add tasks/library items after switching your online connection off (wifi/mobile network) then reconnecting and seeing the app live-sync those items when a connection is found again.
+- Use add to homescreen from the demo url
+- Viewing the app update snackbar/alert when app updates are available (this really depends on live updates being applied to the server, easily testable on your own deployments - trickeier to catch on the demo urls)
 
 ## Project Architecture
 
