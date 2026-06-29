@@ -90,7 +90,7 @@ function useDifferentEmail() {
 </script>
 
 <template>
-  <section class="mx-auto max-w-md">
+  <section class="mx-auto max-w-md p-4">
     <template v-if="step === 'email'">
       <h2 class="mb-4 text-2xl font-semibold text-slate-900">Log in with email code</h2>
       <p class="mb-4 text-sm text-slate-600">We'll send a 6-character code to your email. No password needed.</p>

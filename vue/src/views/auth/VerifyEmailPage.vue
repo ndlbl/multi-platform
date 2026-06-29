@@ -73,7 +73,7 @@ const onSubmit = handleSubmit((vals) => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-md">
+  <section class="mx-auto max-w-md p-4">
     <h2 class="mb-4 text-2xl font-semibold text-slate-900">Verify your email</h2>
     <p class="mb-4 text-sm text-slate-600">Enter the 6-character code we sent. It's valid for 10 minutes.</p>
 

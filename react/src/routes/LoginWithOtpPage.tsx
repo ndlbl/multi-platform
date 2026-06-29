@@ -66,7 +66,7 @@ export default function LoginWithOtpPage() {
 
   if (step === 'email') {
     return (
-      <section className="mx-auto max-w-md">
+      <section className="mx-auto max-w-md p-4">
         <h2 className="mb-4 text-2xl font-semibold text-slate-900">Log in with email code</h2>
         <p className="mb-4 text-sm text-slate-600">
           We'll send a 6-character code to your email. No password needed.
@@ -120,7 +120,7 @@ export default function LoginWithOtpPage() {
 
   // OTP code
   return (
-    <section className="mx-auto max-w-md">
+    <section className="mx-auto max-w-md p-4">
       <h2 className="mb-4 text-2xl font-semibold text-slate-900">Enter your code</h2>
       <p className="mb-4 text-sm text-slate-600">
         We sent a 6-character code to <strong>{email}</strong>. Valid for 10 minutes.
