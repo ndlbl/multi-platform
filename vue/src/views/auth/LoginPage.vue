@@ -54,7 +54,7 @@ const onSubmit = handleSubmit((values) => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-md">
+  <section class="mx-auto max-w-md p-4">
     <h2 class="mb-4 text-2xl font-semibold text-slate-900">Log in</h2>
 
     <form class="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm" @submit="onSubmit">

@@ -49,7 +49,7 @@ export default function LoginPage() {
   const onSubmit = handleSubmit((values) => loginMutation.mutate(values));
 
   return (
-    <section className="mx-auto max-w-md">
+    <section className="mx-auto max-w-md p-4">
       <h2 className="mb-4 text-2xl font-semibold text-slate-900">Log in</h2>
 
       <form
