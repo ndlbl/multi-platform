@@ -109,9 +109,7 @@
       <span>You're offline</span>
       @if (offlineQueue.totalPending() > 0) {
         <span class="rounded-full bg-amber-200 px-2 py-0.5 text-xs font-medium">
-          {{ offlineQueue.totalPending() }} change{{
-            offlineQueue.totalPending() === 1 ? '' : 's'
-          }}
+          {{ offlineQueue.totalPending() }} change{{ offlineQueue.totalPending() === 1 ? '' : 's' }}
           pending
         </span>
       }
@@ -130,3 +128,12 @@
   </main>
 </div>
 <app-toast-host />
+
+@if (updateAvailable()) {
+  <app-snackbar
+    message="A new version is available"
+    action="Reload"
+    (actionClick)="reloadApp()"
+    (dismissed)="updateAvailable.set(false)"
+  />
+}

@@ -1,12 +1,14 @@
 import { afterNextRender, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { forkJoin } from 'rxjs';
 import { filter, pairwise } from 'rxjs/operators';
 
 import { AuthService } from './core/auth.service';
 import { ConnectivityService } from './core/connectivity.service';
 import { OfflineQueueService } from './core/offline-queue.service';
+import { SnackbarComponent } from './core/snackbar.component';
 import { SpinnerComponent } from './core/spinner.component';
 import { ToastHostComponent } from './core/toas-host.component';
 import { ToastService } from './core/toast.service';
@@ -16,7 +18,14 @@ import { TaskService } from './tasks/task.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, SpinnerComponent, ToastHostComponent, RouterLinkActive],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    SpinnerComponent,
+    ToastHostComponent,
+    RouterLinkActive,
+    SnackbarComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -26,6 +35,7 @@ export class AppComponent {
   private taskService = inject(TaskService);
   private libraryService = inject(LibraryService);
   private toast = inject(ToastService);
+  private swUpdate = inject(SwUpdate);
 
   protected readonly connectivity = inject(ConnectivityService);
   protected readonly offlineQueue = inject(OfflineQueueService);
@@ -36,6 +46,7 @@ export class AppComponent {
 
   protected readonly hydrated = signal(false);
   protected readonly syncing = signal(false);
+  protected readonly updateAvailable = signal(false);
 
   constructor() {
     afterNextRender(() => this.hydrated.set(true));
@@ -49,11 +60,26 @@ export class AppComponent {
         takeUntilDestroyed(),
       )
       .subscribe(() => this.syncOnReconnect());
+
+    // Listen for a new SW version becoming ready and surface the snackbar.
+    // isEnabled is false in dev mode (SW is disabled), so this is a no-op locally.
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.versionUpdates
+        .pipe(
+          filter((e): e is VersionReadyEvent => e.type === 'VERSION_READY'),
+          takeUntilDestroyed(),
+        )
+        .subscribe(() => this.updateAvailable.set(true));
+    }
   }
 
   logout(): void {
     this.auth.logout();
     this.router.navigate(['/login']);
+  }
+
+  protected reloadApp(): void {
+    window.location.reload();
   }
 
   private syncOnReconnect(): void {
