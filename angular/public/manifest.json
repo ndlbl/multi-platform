@@ -4,7 +4,7 @@
   "description": "Check off your Tasks and Media/Reading Lists.",
   "start_url": "/",
   "scope": "/",
-  "display": "minimal-ui",
+  "display": "standalone",
   "orientation": "any",
   "background_color": "#edfff9",
   "theme_color": "#3c489e",
