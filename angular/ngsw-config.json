@@ -34,6 +34,16 @@
         "timeout": "10s",
         "strategy": "freshness"
       }
+    },
+    {
+      "name": "api-library",
+      "urls": ["/api/library", "/api/library/**"],
+      "cacheConfig": {
+        "maxSize": 200,
+        "maxAge": "1d",
+        "timeout": "10s",
+        "strategy": "freshness"
+      }
     }
   ]
 }
