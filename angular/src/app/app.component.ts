@@ -1,6 +1,6 @@
 import { afterNextRender, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { forkJoin } from 'rxjs';
 import { filter, pairwise } from 'rxjs/operators';
@@ -47,9 +47,18 @@ export class AppComponent {
   protected readonly hydrated = signal(false);
   protected readonly syncing = signal(false);
   protected readonly updateAvailable = signal(false);
+  protected readonly menuOpen = signal(false);
 
   constructor() {
     afterNextRender(() => this.hydrated.set(true));
+
+    // Close mobile menu on any navigation
+    this.router.events
+      .pipe(
+        filter((e) => e instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.menuOpen.set(false));
 
     // Detect the offline → online transition.
     toObservable(this.connectivity.online)
