@@ -18,17 +18,14 @@ export class TaskService {
   readonly tasks = this._tasks.asReadonly();
   readonly outstanding = computed(() => this._tasks().filter((t) => !t.done).length);
 
-  load() {
-    return this.http.get<Task[]>(this.baseUrl).pipe(
-      tap((tasks) => {
-        this._tasks.set(tasks);
-        // The SW may serve a stale cached response while offline. Re-apply any
-        // queued mutations so the UI reflects what the user did this session.
-        if (this.connectivity.offline() && this.offlineQueue.taskHasPending()) {
-          this.applyQueueOptimistically();
-        }
-      }),
-    );
+  load(): Observable<Task[]> {
+    // When offline, skip the network request entirely — the signal already holds
+    // data from this session. Re-apply any queued mutations and return current state.
+    if (this.connectivity.offline()) {
+      if (this.offlineQueue.taskHasPending()) this.applyQueueOptimistically();
+      return of(this._tasks());
+    }
+    return this.http.get<Task[]>(this.baseUrl).pipe(tap((tasks) => this._tasks.set(tasks)));
   }
 
   create(input: TaskInput): Observable<Task> {

@@ -104,16 +104,14 @@ export class LibraryService {
 
   // COMMANDS (HTTP-backed, mirrors TaskService)
 
-  load() {
+  load(): Observable<LibraryItem[]> {
+    if (this.connectivity.offline()) {
+      if (this.offlineQueue.libraryHasPending()) this.applyQueueOptimistically();
+      return of(this._items());
+    }
     return this.http.get<ApiLibraryItem[]>(this.baseUrl).pipe(
       map((items) => items.map(reviveDates)),
-      tap((items) => {
-        this._items.set(items);
-        // The SW may serve a stale cached response while offline. Re-apply queued mutations.
-        if (this.connectivity.offline() && this.offlineQueue.libraryHasPending()) {
-          this.applyQueueOptimistically();
-        }
-      }),
+      tap((items) => this._items.set(items)),
     );
   }
 
