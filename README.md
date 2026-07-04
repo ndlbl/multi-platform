@@ -23,13 +23,13 @@ In terms of front end frameworks/libraries: Angular is more opinionated and come
 For brevity/simplicty I have deployed instances of the site to servers so it can be live previewed.
 
 - [API](https://api.demo.ndlbl.com/api/health)
-- [Angular site](https://demo.ndlbl.com)
+- [Angular site (PWA)](https://demo.ndlbl.com)
 - [React site](https://react.demo.ndlbl.com)
 - [Vue site](https://vue.ndlbl.com)
 
 ## Angular PWA
 
-The Angular project in particular has been updated to show capabilities in Progressive web apps, utilising service workers and offline queues for CRUD items.
+The Angular project in particular has been updated to show capabilities as a 'Progressive Web Apps', utilising service workers and offline queues for CRUD items.
 
 - Installable to phone homescreen, then viewable as a chromeless standalone application
 - Offline/online aware
@@ -67,7 +67,7 @@ Simply run `npm install` in the root folder to install all the package within th
 
 ### Running apps
 
-A 'run all' function is provided in the root package.json via `npm run dev` which concurrenelty starts the 2 front ends (`:4200` for angular, `:5173` for react and `5174` for vie) and the api, your local MongoDB instance should already be running.
+A 'run all' function is provided in the root package.json via `npm run dev` which concurrenelty starts the 3 front ends (`:4200` for Angular, `:5173` for React, `5174` for Vue) and the api, your local MongoDB instance should already be running.
 Local mongoDB can run without auth (simply not providing `MONGO_USER` and `MONGO_PASS`) will use the non-authed DBs, never run a deployed API against a non-auth DB instance. front-ends both feature hot-reloads to instantly see changes you make.
 
 ### Linting
