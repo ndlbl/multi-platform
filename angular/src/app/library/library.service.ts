@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { EMPTY, from, Observable, of } from 'rxjs';
-import { catchError, concatMap, map, tap } from 'rxjs/operators';
+import { catchError, concatMap, map, tap, timeout } from 'rxjs/operators';
+
+// Safety net for hung requests (e.g. a stuck service-worker fetch on iOS) so the UI
+// surfaces a retryable error instead of spinning forever.
+const REQUEST_TIMEOUT_MS = 10_000;
 
 import { ConnectivityService } from '../core/connectivity.service';
 import { LibraryQueuedOp, OfflineQueueService } from '../core/offline-queue.service';
@@ -49,7 +53,7 @@ export class LibraryService {
     return this._items()
       .filter((i) => kind === 'all' || i.kind === kind)
       .filter((i) => !term || i.title.toLowerCase().includes(term))
-      .toSorted((a, b) => b.addedAt.getTime() - a.addedAt.getTime());
+      .sort((a, b) => b.addedAt.getTime() - a.addedAt.getTime());
   });
 
   readonly countsByKind = computed<CountsByKind>(() => {
@@ -110,6 +114,7 @@ export class LibraryService {
       return of(this._items());
     }
     return this.http.get<ApiLibraryItem[]>(this.baseUrl).pipe(
+      timeout(REQUEST_TIMEOUT_MS),
       map((items) => items.map(reviveDates)),
       tap((items) => this._items.set(items)),
     );

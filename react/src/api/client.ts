@@ -16,6 +16,8 @@ export class ApiError extends Error {
   }
 }
 
+const REQUEST_TIMEOUT_MS = 10_000;
+
 export async function api<T>(url: string, init?: RequestInit): Promise<T> {
   const token = getToken();
   const headers: HeadersInit = {
@@ -24,7 +26,22 @@ export async function api<T>(url: string, init?: RequestInit): Promise<T> {
     ...init?.headers,
   };
 
-  const res = await fetch(`${API_BASE}${url}`, { ...init, headers });
+  // AbortController (not AbortSignal.timeout, which is Safari 16+ only) so a hung
+  // request surfaces as a retryable error instead of spinning forever.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${url}`, { ...init, headers, signal: controller.signal });
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new ApiError(0, 'Request timed out');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));

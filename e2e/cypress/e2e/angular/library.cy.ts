@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
 
 describe('Angular · Library', () => {
-  const email = 'e2e-ng@ndlbl.com'
+  const email = `e2e-ng@${Cypress.env('testEmailDomain')}`
   const password = Cypress.env('testPassword') as string
-  const otherEmail = 'e2e-ng-b@ndlbl.com'
+  const otherEmail = `e2e-ng-b@${Cypress.env('testEmailDomain')}`
 
   beforeEach(() => {
     cy.task('db:cleanup', { emails: [email, otherEmail] })

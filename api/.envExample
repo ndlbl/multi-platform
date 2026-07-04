@@ -47,3 +47,9 @@ SMTP_PASS=
 # From address — must be one the SMTP server may send for. Defaults to SMTP_USER if unset.
 SMTP_FROM=
 # SMTP_SECURE=true
+
+# --- E2E tests ---
+# Domain+TLD used for e2e test accounts (cypress reads this too). Keep this a
+# placeholder/non-deliverable domain unless you own the mailbox — real SMTP config
+# above means verification/OTP emails actually attempt to send.
+TEST_EMAIL_DOMAIN=example.com
