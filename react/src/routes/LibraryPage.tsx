@@ -43,7 +43,7 @@ export default function LibraryPage() {
     return items
       .filter((i) => filterKind === 'all' || i.kind === filterKind)
       .filter((i) => !term || i.title.toLowerCase().includes(term))
-      .toSorted((a, b) => b.addedAt.localeCompare(a.addedAt));
+      .sort((a, b) => b.addedAt.localeCompare(a.addedAt));
   }, [items, filterKind, searchTerm]);
 
   const countsByKind = useMemo<CountsByKind>(() => {

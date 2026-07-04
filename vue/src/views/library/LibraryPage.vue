@@ -34,7 +34,7 @@ const filteredItems = computed(() => {
   return items.value
     .filter((i) => filterKind.value === "all" || i.kind === filterKind.value)
     .filter((i) => !term || i.title.toLowerCase().includes(term))
-    .toSorted((a, b) => b.addedAt.localeCompare(a.addedAt));
+    .sort((a, b) => b.addedAt.localeCompare(a.addedAt));
 });
 
 const countsByKind = computed<CountsByKind>(() => {

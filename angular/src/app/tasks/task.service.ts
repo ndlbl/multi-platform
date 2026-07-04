@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { EMPTY, from, Observable, of } from 'rxjs';
-import { catchError, concatMap, map, tap } from 'rxjs/operators';
+import { catchError, concatMap, map, tap, timeout } from 'rxjs/operators';
+
+// Safety net for hung requests (e.g. a stuck service-worker fetch on iOS) so the UI
+// surfaces a retryable error instead of spinning forever.
+const REQUEST_TIMEOUT_MS = 10_000;
 
 import { ConnectivityService } from '../core/connectivity.service';
 import { OfflineQueueService, QueuedOp } from '../core/offline-queue.service';
@@ -25,7 +29,10 @@ export class TaskService {
       if (this.offlineQueue.taskHasPending()) this.applyQueueOptimistically();
       return of(this._tasks());
     }
-    return this.http.get<Task[]>(this.baseUrl).pipe(tap((tasks) => this._tasks.set(tasks)));
+    return this.http.get<Task[]>(this.baseUrl).pipe(
+      timeout(REQUEST_TIMEOUT_MS),
+      tap((tasks) => this._tasks.set(tasks)),
+    );
   }
 
   create(input: TaskInput): Observable<Task> {
