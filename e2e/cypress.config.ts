@@ -1,6 +1,13 @@
+import path from 'node:path'
+
 import { defineConfig } from 'cypress'
+import dotenv from 'dotenv'
 
 import * as seed from './cypress/tasks/seed'
+
+// Same .env seed.ts reuses (see cypress/tasks/seed.ts) — lets TEST_EMAIL_DOMAIN
+// live in your own gitignored api/.env instead of being exported by hand.
+dotenv.config({ path: path.resolve(__dirname, '../api/.env') })
 
 // Shared Cypress project for BOTH frontends. baseUrl is overridden per app via
 // the npm scripts (Angular :4200, React :5173); specs live under
@@ -38,5 +45,10 @@ export default defineConfig({
     // Each spec defines its own email constants (e2e-ng-*, e2e-react-*, e2e-vue-*)
     // so suites can run concurrently without DB conflicts.
     testPassword: 'E2e-Pass123!',
+    // Domain+TLD for e2e test accounts. Defaults to a harmless placeholder so a
+    // fresh clone can't accidentally fire verification/OTP emails at someone
+    // else's real mailbox. Set TEST_EMAIL_DOMAIN in your own api/.env to use
+    // your real (test-safe) domain.
+    testEmailDomain: process.env.TEST_EMAIL_DOMAIN ?? 'example.com',
   },
 })

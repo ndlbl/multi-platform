@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
 describe('Vue · Registration flow', () => {
-  const REGISTER_EMAIL = 'e2e-vue-register@ndlbl.com'
-  const VERIFY_EMAIL = 'e2e-vue-verify@ndlbl.com'
+  const REGISTER_EMAIL = `e2e-vue-register@${Cypress.env('testEmailDomain')}`
+  const VERIFY_EMAIL = `e2e-vue-verify@${Cypress.env('testEmailDomain')}`
   const PASSWORD = Cypress.env('testPassword') as string
 
   beforeEach(() => {

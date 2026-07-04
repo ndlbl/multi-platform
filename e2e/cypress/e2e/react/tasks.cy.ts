@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
 
 describe('React · Tasks', () => {
-  const email = 'e2e-react@ndlbl.com'
+  const email = `e2e-react@${Cypress.env('testEmailDomain')}`
   const password = Cypress.env('testPassword') as string
-  const otherEmail = 'e2e-react-b@ndlbl.com'
+  const otherEmail = `e2e-react-b@${Cypress.env('testEmailDomain')}`
 
   beforeEach(() => {
     cy.task('db:cleanup', { emails: [email, otherEmail] })

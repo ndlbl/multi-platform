@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Angular · Login flow', () => {
-  const email = 'e2e-ng@ndlbl.com'
+  const email = `e2e-ng@${Cypress.env('testEmailDomain')}`
   const password = Cypress.env('testPassword') as string
 
   beforeEach(() => {
