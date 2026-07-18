@@ -2,7 +2,7 @@
   <div class="mb-4 flex items-baseline justify-between">
     <h2 class="text-2xl font-semibold text-slate-900">Your tasks</h2>
     <div class="flex items-baseline gap-4">
-      <span class="text-sm text-slate-500">{{ outstanding() }} outstanding</span>
+      <span class="text-sm text-slate-500">{{ store.outstanding() }} outstanding</span>
       <a
         routerLink="/tasks/new"
         class="rounded-md bg-indigo-600 px-3 py-1.5 text-sm text-white shadow hover:bg-indigo-700"
@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  @if (loading()) {
+  @if (store.loading()) {
     <ul
       class="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white shadow-sm"
       aria-busy="true"
@@ -27,14 +27,14 @@
         </li>
       }
     </ul>
-  } @else if (error()) {
+  } @else if (store.error()) {
     <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-      {{ error() }}
-      <button class="ml-2 underline" (click)="fetch()">Retry</button>
+      {{ store.error() }}
+      <button class="ml-2 underline" (click)="store.load()">Retry</button>
     </div>
   } @else {
     <ul class="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white shadow-sm">
-      @for (task of tasks(); track task.id) {
+      @for (task of store.entities(); track task.id) {
         <li class="flex items-center gap-3 p-4">
           <input
             type="checkbox"

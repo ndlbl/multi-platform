@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 
 import { ITEM_KINDS, ItemKind, NewLibraryItem } from '../library.model';
-import { LibraryService } from '../library.service';
+import { LibraryStore } from '../library.store';
 
 @Component({
   selector: 'app-add-library-item',
@@ -19,7 +19,7 @@ import { LibraryService } from '../library.service';
 })
 export class AddLibraryItemComponent {
   private fb = inject(FormBuilder);
-  private lib = inject(LibraryService);
+  private lib = inject(LibraryStore);
   protected readonly kinds = ITEM_KINDS;
 
   // Fires after an item is successfully added. The parent uses it to close the dialog.
