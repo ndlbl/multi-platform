@@ -1,5 +1,5 @@
 import { DecimalPipe, PercentPipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { afterNextRender, Component, inject, OnInit, signal } from '@angular/core';
 
 import { AddLibraryItemComponent } from '../add-library-item/add-library-item.component';
 import { ITEM_KINDS, ItemKind } from '../library.model';
@@ -15,6 +15,18 @@ export class LibraryListComponent implements OnInit {
   protected readonly lib = inject(LibraryStore);
 
   protected readonly kinds = ['all', ...ITEM_KINDS] as const;
+
+  // The command/commandfor Invoker Commands API isn't implemented everywhere yet
+  // (notably iOS/macOS Safari as of writing) — feature-detect once on the client and
+  // fall back to imperative showModal()/close() where it's unsupported. Defaults to
+  // false for SSR (HTMLButtonElement doesn't exist on the server).
+  protected readonly supportsInvokerCommands = signal(false);
+
+  constructor() {
+    afterNextRender(() => {
+      this.supportsInvokerCommands.set('command' in HTMLButtonElement.prototype);
+    });
+  }
 
   ngOnInit(): void {
     this.lib.load();
