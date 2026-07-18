@@ -2,7 +2,7 @@ import { Component, computed, inject, input, OnInit, signal } from '@angular/cor
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { TaskService } from '../task.service';
+import { TaskStore } from '../task.store';
 
 // Strongly typed shape of the form
 type TaskForm = FormGroup<{
@@ -21,7 +21,7 @@ export class TaskFormComponent implements OnInit {
   // DI
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  private taskService = inject(TaskService);
+  private taskStore = inject(TaskStore);
 
   // Router-bound input `:id`, Undefined if on `tasks/new`.
   readonly id = input<string>();
@@ -45,7 +45,7 @@ export class TaskFormComponent implements OnInit {
     if (!id) return;
 
     this.loading.set(true);
-    this.taskService.getOne(id).subscribe({
+    this.taskStore.getOne(id).subscribe({
       next: (task) => {
         this.form.patchValue({ title: task.title, done: task.done });
         this.loading.set(false);
@@ -69,7 +69,7 @@ export class TaskFormComponent implements OnInit {
     const value = this.form.getRawValue();
     const id = this.id();
 
-    const op$ = id ? this.taskService.update(id, value) : this.taskService.create(value);
+    const op$ = id ? this.taskStore.update(id, value) : this.taskStore.create(value);
 
     op$.subscribe({
       next: () => this.router.navigate(['/tasks']),

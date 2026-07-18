@@ -2,7 +2,7 @@
   <div class="flex items-baseline justify-between">
     <h2 class="text-2xl font-semibold text-slate-900">Library</h2>
     <span class="text-sm text-slate-500">
-      {{ lib.items().length }} item{{ lib.items().length === 1 ? '' : 's' }}
+      {{ lib.entities().length }} item{{ lib.entities().length === 1 ? '' : 's' }}
     </span>
   </div>
   <div class="flex justify-end">
@@ -84,14 +84,14 @@
     </select>
   </div>
 
-  @if (error()) {
+  @if (lib.error()) {
     <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-      {{ error() }}
-      <button class="ml-2 underline" (click)="fetch()">Retry</button>
+      {{ lib.error() }}
+      <button class="ml-2 underline" (click)="lib.load()">Retry</button>
     </div>
   }
 
-  @if (loading() && !lib.items().length) {
+  @if (lib.loading() && !lib.entities().length) {
     <ul
       class="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white"
       aria-busy="true"

@@ -1,7 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { TaskService } from '../task.service';
+import { TaskStore } from '../task.store';
 
 @Component({
   selector: 'app-task-list',
@@ -11,33 +11,17 @@ import { TaskService } from '../task.service';
   styleUrl: './task-list.component.scss',
 })
 export class TaskListComponent implements OnInit {
-  private taskService = inject(TaskService);
-  readonly tasks = this.taskService.tasks;
-  readonly outstanding = this.taskService.outstanding;
-  readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
+  protected readonly store = inject(TaskStore);
 
   ngOnInit(): void {
-    this.fetch();
-  }
-
-  fetch(): void {
-    this.loading.set(true);
-    this.error.set(null);
-    this.taskService.load().subscribe({
-      next: () => this.loading.set(false),
-      error: (err) => {
-        this.error.set(err.message ?? 'Failed to load tasks');
-        this.loading.set(false);
-      },
-    });
+    this.store.load();
   }
 
   toggle(id: string, done: boolean): void {
-    this.taskService.update(id, { done: !done }).subscribe();
+    this.store.update(id, { done: !done }).subscribe();
   }
 
   remove(id: string): void {
-    this.taskService.remove(id).subscribe();
+    this.store.remove(id).subscribe();
   }
 }
