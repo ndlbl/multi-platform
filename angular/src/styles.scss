@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+// Firefox aliases -webkit-appearance to its own appearance implementation, so this
+// resets the native control (gray OS menulist look) in every browser uniformly —
+// the custom chevron drawn via the `bg-chevron-down` utility replaces it everywhere.
+select {
+  appearance: none;
+  -webkit-appearance: none;
+}

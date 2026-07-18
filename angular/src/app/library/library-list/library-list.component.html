@@ -94,7 +94,7 @@
     />
     <label for="kindSelect" class="sr-only">Kind:</label>
     <select
-      class="rounded-md border border-slate-300 px-3 py-2 text-sm"
+      class="rounded-md border border-slate-300 bg-white py-2 pl-3 pr-8 text-sm bg-chevron-down bg-[length:1.25em] bg-[right_0.5rem_center] bg-no-repeat"
       #kindSelect
       [value]="lib.filterKind()"
       (change)="setKind($any(kindSelect.value))"

@@ -11,7 +11,7 @@
     <select
       id="kind-field"
       formControlName="kind"
-      class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+      class="w-full rounded-md border border-slate-300 bg-white py-2 pl-3 pr-8 text-sm bg-chevron-down bg-[length:1.25em] bg-[right_0.5rem_center] bg-no-repeat"
     >
       @for (k of kinds; track k) {
         <option [value]="k">{{ k }}</option>
